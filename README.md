@@ -84,7 +84,7 @@ LanceDB stores embeddings generated with gemini-embedding-001.
 3. RAG Logic
 PydanticAI retrieves relevant chunks and generates answers using structured outputs.
 
-![RAG agent](image-2.png)
+![RAG agent](assets/RAG_system_prompt.png)
 
 4. API Layer
 FastAPI exposes the chatbot via a POST endpoint.
@@ -97,7 +97,7 @@ The API is deployed serverlessly using Azure Functions and consumed by Streamlit
 
 *See the below example of a query answered using Retrieval-Augmented Generation based on YouTube transcripts.*
 
-![Chatbot demo](image.png)
+![Chatbot demo](assets/chatbot_demo.png)
 
 Visual overview of the architecture
 
@@ -141,7 +141,7 @@ Visual overview of the architecture
 
 Data Flow:
 1. ingestion.py → Reads transcripts → Converts to embeddings → Stores in LanceDB (knowledge_base)
-![Data ingestion](image-1.png)
+![Data ingestion](assets/data_ingestion.png)
 2. User types a question → Streamlit Frontend (Azure Web App)
 3. Streamlit sends HTTP request → Azure Function (FastAPI API)
 4. Azure Function → RAG Agent (PydanticAI + Gemini)

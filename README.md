@@ -1,7 +1,3 @@
-# data-engineering-rag-chatbot
-
-A Retrieval-Augmented Generation (RAG) chatbot built on YouTube transcript data, designed to support learning in data engineering.
-
 # 🤖 The Data Engineer YouTube RAG Chatbot
 
 Welcome to **The Data Engineer YouTube RAG Chatbot**!  
@@ -88,6 +84,8 @@ LanceDB stores embeddings generated with gemini-embedding-001.
 3. RAG Logic
 PydanticAI retrieves relevant chunks and generates answers using structured outputs.
 
+![RAG agent](image-2.png)
+
 4. API Layer
 FastAPI exposes the chatbot via a POST endpoint.
 
@@ -96,6 +94,60 @@ Streamlit provides a simple chat interface.
 
 6. Deployment
 The API is deployed serverlessly using Azure Functions and consumed by Streamlit locally.
+
+*See the below example of a query answered using Retrieval-Augmented Generation based on YouTube transcripts.*
+
+![Chatbot demo](image.png)
+
+Visual overview of the architecture
+
+        ┌────────────────────────┐
+        │          USER          │
+        └──────────┬─────────────┘
+                   │
+                   │ Types question
+                   ▼
+        ┌──────────────────────┐
+        │  Streamlit Frontend  │ (Azure Web App)
+        │  (Chat Interface)    │
+        └──────────┬───────────┘
+                   │ Sends question (HTTP)
+                   ▼
+        ┌──────────────────────┐
+        │   Azure Function     │
+        │ (FastAPI / api.py)   │
+        └──────────┬───────────┘
+                   │ Routes to
+                   ▼
+        ┌──────────────────────┐
+        │  PydanticAI + Gemini │ (backend/rag.py)
+        │  (AI Brain)          │
+        └──────────┬───────────┘
+                   │ Uses tool to find
+                   │ relevant content
+                   ▼
+        ┌──────────────────────┐
+        │   LanceDB Vector     │ (knowledge_base/)
+        │   Database           │
+        └──────────┬───────────┘
+                   │ Finds matching
+                   │ transcripts
+                   ▼
+        ┌──────────────────────┐
+        │  Your Transcripts    │ (transcripts/)
+        │  (Raw Text Files)    │
+        └──────────────────────┘
+
+
+Data Flow:
+1. ingestion.py → Reads transcripts → Converts to embeddings → Stores in LanceDB (knowledge_base)
+![Data ingestion](image-1.png)
+2. User types a question → Streamlit Frontend (Azure Web App)
+3. Streamlit sends HTTP request → Azure Function (FastAPI API)
+4. Azure Function → RAG Agent (PydanticAI + Gemini)
+5. RAG Agent → Searches LanceDB → Retrieves relevant transcript chunks
+6. Gemini AI → Generates answer based on retrieved content
+7. Answer → Azure Function → Frontend → Displayed to the user
 
 ### Tech Stack
 
